@@ -1,6 +1,6 @@
 name: getnet_pos
-description: A new flutter plugin project.
-version: 0.0.1
+description: This is a plugin wrapper to handle calls to getnet pos hardware sdk.
+version: 0.1.0
 author: João Marcos Ferreira <joaomarccos.ads@gmail.com>
 homepage: https://github.com/joaomarccos/getnet_pos
 
