@@ -8,7 +8,7 @@ A plugin wrapper to use getnet pos hardware sdk on your flutter apps.
 
 ### Configure your project
 
-Change minSdkVersion to 22 on your app
+Change **minSdkVersion to 22** in your app
 ```
  defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
@@ -21,7 +21,7 @@ Change minSdkVersion to 22 on your app
     }
 ``` 
 
-In android/app folder add the getnet sdk dependency (must be an .arr file)
+In android/app folder **add the getnet sdk dependency** (must have .aar extension)
 
 ```
 .
