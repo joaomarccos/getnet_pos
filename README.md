@@ -2,6 +2,8 @@
 
 A plugin wrapper to genet pos hardware interface methods.
 
+**ONLY WORKS ON ANDROID FOR NOW**
+
 ## Usage
 
 ### Print method

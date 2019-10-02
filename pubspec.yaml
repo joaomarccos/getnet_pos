@@ -1,8 +1,8 @@
 name: getnet_pos
 description: A new flutter plugin project.
 version: 0.0.1
-author:
-homepage:
+author: João Marcos Ferreira <joaomarccos.ads@gmail.com>
+homepage: https://github.com/joaomarccos/getnet_pos
 
 environment:
   sdk: ">=2.1.0 <3.0.0"
