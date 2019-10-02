@@ -34,5 +34,6 @@ android {
 }
 
 dependencies {
-implementation project(path: ':pos_digital')
+    implementation project(path: ':pos_digital')
 }
+
