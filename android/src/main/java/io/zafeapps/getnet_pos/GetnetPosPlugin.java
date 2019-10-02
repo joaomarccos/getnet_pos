@@ -102,7 +102,7 @@ public class GetnetPosPlugin implements MethodCallHandler {
     private void addTextToPrinter(List<String> lines) throws RemoteException {
         PosDigital.getInstance().getPrinter().init();
         PosDigital.getInstance().getPrinter().setGray(5);
-        PosDigital.getInstance().getPrinter().defineFontFormat(FontFormat.MEDIUM);
+        PosDigital.getInstance().getPrinter().defineFontFormat(FontFormat.SMALL);
         PosDigital.getInstance().getPrinter().addText(AlignMode.CENTER, lines.remove(0));
         for (String line : lines) {
             PosDigital.getInstance().getPrinter().addText(AlignMode.LEFT, line);

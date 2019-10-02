@@ -25,3 +25,7 @@
 ## 0.1.2
 
 * bug fix on printer stub callback
+
+## 0.1.2+1
+
+* decrease font size
