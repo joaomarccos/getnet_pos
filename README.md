@@ -17,7 +17,7 @@ import 'package:getnet_pos/getnet_pos.dart';
 ...
 
 try {
-  await GetnetPos.print([
+  GetnetPos.print([
     "Header is the first line",
     "Content line 1",
     "Content line 2",
