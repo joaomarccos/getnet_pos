@@ -80,20 +80,15 @@ public class GetnetPosPlugin implements MethodCallHandler {
      * @throws RemoteException - if the printer is not available
      */
     private void callPrintMethod(final Result result) throws RemoteException {
-        PosDigital.getInstance().getPrinter().print(new IPrinterCallback() {
+        PosDigital.getInstance().getPrinter().print(new IPrinterCallback.Stub() {
             @Override
-            public void onSuccess() throws RemoteException {
-                result.success("Printed " + android.os.Build.VERSION.RELEASE);
+            public void onSuccess() {
+                result.success("Printed.");
             }
 
             @Override
-            public void onError(int i) throws RemoteException {
+            public void onError(int i) {
                 result.error("Error code: " + i, null, null);
-            }
-
-            @Override
-            public IBinder asBinder() {
-                return null;
             }
         });
     }

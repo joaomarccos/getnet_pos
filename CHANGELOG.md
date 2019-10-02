@@ -21,3 +21,7 @@
 ## 0.1.1+3
 
 * external dependency configuration
+
+## 0.1.2
+
+* bug fix on printer stub callback
