@@ -17,3 +17,7 @@
 ## 0.1.1+1
 
 * gradle plugin fixes
+
+## 0.1.1+2
+
+* external dependency configuration

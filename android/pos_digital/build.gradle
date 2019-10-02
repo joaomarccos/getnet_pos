@@ -1,2 +1,0 @@
-configurations.maybeCreate("default")
-artifacts.add("default", file('libposdigital-1.4.0-2-release.aar'))
