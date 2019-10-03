@@ -10,10 +10,12 @@ class GetnetPos {
     List<String> list, {
     String qrCodePattern = '(\\d{44}\\|.*\$)',
     String barcodePattern = '^\\d{1,}.\$',
+    bool printBarcode = true,
   }) async =>
       await _channel.invokeMethod('print', {
         'list': list,
         'qrCodePattern': qrCodePattern,
         'barcodePattern': barcodePattern,
+        'printBarcode': printBarcode,
       });
 }

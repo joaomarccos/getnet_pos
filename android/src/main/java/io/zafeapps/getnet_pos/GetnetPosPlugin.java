@@ -66,9 +66,10 @@ public class GetnetPosPlugin implements MethodCallHandler {
             List<String> lines = call.argument("list");
             String qrCodePattern = call.argument("qrCodePattern");
             String barCodePattern = call.argument("barcodePattern");
+            boolean printBarcode = call.argument("printBarcode");
             if (lines != null && !lines.isEmpty()) {
                 try {
-                    addTextToPrinter(lines, qrCodePattern, barCodePattern);
+                    addTextToPrinter(lines, qrCodePattern, barCodePattern, printBarcode);
                     callPrintMethod(result);
                 } catch (Exception e) {
                     result.error("Error on print", e.getMessage(), e);
@@ -105,7 +106,7 @@ public class GetnetPosPlugin implements MethodCallHandler {
      * @param lines - linest to be printed
      * @throws RemoteException - if printer is not available
      */
-    private void addTextToPrinter(List<String> lines, String qrCodePattern, String barcodePattern) throws RemoteException {
+    private void addTextToPrinter(List<String> lines, String qrCodePattern, String barcodePattern, boolean printBarCode) throws RemoteException {
         PosDigital.getInstance().getPrinter().init();
         PosDigital.getInstance().getPrinter().setGray(5);
         PosDigital.getInstance().getPrinter().defineFontFormat(FontFormat.SMALL);
@@ -118,7 +119,7 @@ public class GetnetPosPlugin implements MethodCallHandler {
                 Matcher barcodeMather = patternBarCode.matcher(line);
                 if (qrcodeMatcher.find()) {
                     PosDigital.getInstance().getPrinter().addQrCode(AlignMode.CENTER, 360, line);
-                } else if (barcodeMather.find()) {
+                } else if (printBarCode && barcodeMather.find()) {
                     PosDigital.getInstance().getPrinter().addText(AlignMode.CENTER, line);
                     PosDigital.getInstance().getPrinter().addBarCode(AlignMode.CENTER, line.trim());
                     PosDigital.getInstance().getPrinter().addText(AlignMode.CENTER, "");

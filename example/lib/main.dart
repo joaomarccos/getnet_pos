@@ -25,11 +25,14 @@ class _MyAppState extends State<MyApp> {
     String result;
     // Platform messages may fail, so we use a try/catch PlatformException.
     try {
-      GetnetPos.print([
-        "Header is the first line",
-        "Content line 1",
-        "Content line 2",
-      ]);
+      GetnetPos.print(
+        [
+          "Header is the first line",
+          "Content line 1",
+          "Content line 2",
+        ],
+        printBarcode: true,
+      );
       result = 'Printed with success!';
     } on PlatformException {
       result = 'Failed to print.';

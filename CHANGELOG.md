@@ -51,3 +51,8 @@
 * fix barcode regexp
 
 ## 0.2.1+1
+
+
+## 0.2.2
+
+* printbarcode flag
