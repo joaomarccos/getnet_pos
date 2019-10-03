@@ -117,7 +117,7 @@ public class GetnetPosPlugin implements MethodCallHandler {
                 Matcher qrcodeMatcher = patternQrCode.matcher(line);
                 Matcher barcodeMather = patternBarCode.matcher(line);
                 if (qrcodeMatcher.find()) {
-                    PosDigital.getInstance().getPrinter().addQrCode(AlignMode.CENTER, 240, line);
+                    PosDigital.getInstance().getPrinter().addQrCode(AlignMode.CENTER, 360, line);
                 } else if (barcodeMather.find()) {
                     PosDigital.getInstance().getPrinter().addText(AlignMode.CENTER, line);
                     PosDigital.getInstance().getPrinter().addBarCode(AlignMode.CENTER, line.trim());
