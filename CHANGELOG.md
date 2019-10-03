@@ -46,7 +46,8 @@
 
 * trim barcode 
 
-
 ## 0.2.1
 
 * fix barcode regexp
+
+## 0.2.1+1
