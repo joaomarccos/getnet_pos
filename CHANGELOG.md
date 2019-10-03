@@ -29,3 +29,8 @@
 ## 0.1.2+1
 
 * decrease font size
+
+## 0.2.0
+
+* print qrcode
+* print barcode

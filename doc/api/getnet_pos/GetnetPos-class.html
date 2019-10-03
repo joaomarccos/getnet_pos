@@ -148,12 +148,14 @@
       <h2>Static Methods</h2>
       <dl class="callables">
         <dt id="print" class="callable">
-          <span class="name"><a href="getnet_pos/GetnetPos/print.html">print</a></span><span class="signature">(<wbr><span class="parameter" id="print-param-list"><span class="type-annotation"><a href="dart-core/List-class.html">List</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="dart-core/String-class.html">String</a></span>&gt;</span></span> <span class="parameter-name">list</span></span>)
+          <span class="name"><a href="getnet_pos/GetnetPos/print.html">print</a></span><span class="signature">(<wbr><span class="parameter" id="print-param-list"><span class="type-annotation"><a href="dart-core/List-class.html">List</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="dart-core/String-class.html">String</a></span>&gt;</span></span> <span class="parameter-name">list</span>, {</span> <span class="parameter" id="print-param-qrCodePattern"><span class="type-annotation"><a href="dart-core/String-class.html">String</a></span> <span class="parameter-name">qrCodePattern</span>: <span class="default-value">'^http://www.fazenda.pr.gov.br/nfce/qrcode\\?.*\$'</span>, </span> <span class="parameter" id="print-param-barcodePattern"><span class="type-annotation"><a href="dart-core/String-class.html">String</a></span> <span class="parameter-name">barcodePattern</span>: <span class="default-value">'^\\d*\$'</span></span> })
             <span class="returntype parameter">&#8594; void</span>
           </span>
                   </dt>
         <dd>
-          Print a list of strings
+          Print a list of strings.
+Uses the qrCodePattern to match the qrCode. If matches the qrcode is printed.
+Uses the barcodePattern to match the barcode. If matches the barcode is printed.
                   
 </dd>
       </dl>
@@ -191,7 +193,7 @@
 
 <footer>
   <span class="no-break">
-    getnet_pos 0.0.1
+    getnet_pos 0.2.0
   </span>
 
   

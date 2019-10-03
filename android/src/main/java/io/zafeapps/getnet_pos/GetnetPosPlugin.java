@@ -9,6 +9,8 @@ import com.getnet.posdigital.printer.FontFormat;
 import com.getnet.posdigital.printer.IPrinterCallback;
 
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
@@ -38,7 +40,8 @@ public class GetnetPosPlugin implements MethodCallHandler {
     private static void initPosDigital(Registrar registrar) {
         PosDigital.register(registrar.context(), new PosDigital.BindCallback() {
             @Override
-            public void onError(Exception e) {}
+            public void onError(Exception e) {
+            }
 
             @Override
             public void onConnected() {
@@ -47,7 +50,8 @@ public class GetnetPosPlugin implements MethodCallHandler {
             }
 
             @Override
-            public void onDisconnected() {}
+            public void onDisconnected() {
+            }
         });
     }
 
@@ -60,15 +64,17 @@ public class GetnetPosPlugin implements MethodCallHandler {
     private void print(MethodCall call, final Result result) {
         if (call.method.equals("print")) {
             List<String> lines = call.argument("list");
+            String qrCodePattern = call.argument("qrCodePattern");
+            String barCodePattern = call.argument("barcodePattern");
             if (lines != null && !lines.isEmpty()) {
                 try {
-                    addTextToPrinter(lines);
+                    addTextToPrinter(lines, qrCodePattern, barCodePattern);
                     callPrintMethod(result);
-                } catch (RemoteException e) {
-                    e.printStackTrace();
+                } catch (Exception e) {
+                    result.error("Error on print", e.getMessage(), e);
                 }
             } else {
-                result.error("Lines are required", null, null);
+                result.error("Arguments are missed [list, qrCodePattern, barcodePattern]", null, null);
             }
         }
     }
@@ -99,13 +105,24 @@ public class GetnetPosPlugin implements MethodCallHandler {
      * @param lines - linest to be printed
      * @throws RemoteException - if printer is not available
      */
-    private void addTextToPrinter(List<String> lines) throws RemoteException {
+    private void addTextToPrinter(List<String> lines, String qrCodePattern, String barcodePattern) throws RemoteException {
         PosDigital.getInstance().getPrinter().init();
         PosDigital.getInstance().getPrinter().setGray(5);
         PosDigital.getInstance().getPrinter().defineFontFormat(FontFormat.SMALL);
         PosDigital.getInstance().getPrinter().addText(AlignMode.CENTER, lines.remove(0));
+        Pattern patternQrCode = Pattern.compile(qrCodePattern, Pattern.MULTILINE);
+        Pattern patternBarCode = Pattern.compile(barcodePattern, Pattern.MULTILINE);
         for (String line : lines) {
-            PosDigital.getInstance().getPrinter().addText(AlignMode.LEFT, line);
+            Matcher qrcodeMatcher = patternQrCode.matcher(line);
+            Matcher barcodeMather = patternBarCode.matcher(line);
+            if (qrcodeMatcher.find()) {
+                PosDigital.getInstance().getPrinter().addQrCode(AlignMode.CENTER, 240, qrcodeMatcher.group(0));
+            } else if (barcodeMather.find()) {
+                PosDigital.getInstance().getPrinter().addText(AlignMode.CENTER, barcodeMather.group(0));
+            } else {
+                PosDigital.getInstance().getPrinter().addText(AlignMode.LEFT, line);
+            }
+
         }
     }
 
