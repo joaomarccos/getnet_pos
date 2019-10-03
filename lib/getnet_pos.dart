@@ -8,7 +8,7 @@ class GetnetPos {
   /// Uses the barcodePattern to match the barcode. If matches the barcode is printed.
   static void print(
     List<String> list, {
-    String qrCodePattern = '^http://www.fazenda.pr.gov.br/nfce/qrcode\\?.*\$',
+    String qrCodePattern = '(\\d{44}\\|.*\$)',
     String barcodePattern = '^\\d*\$',
   }) async =>
       await _channel.invokeMethod('print', {
