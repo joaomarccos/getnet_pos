@@ -38,3 +38,6 @@
 ## 0.2.0+1
 
 * refactor qrcode pattern
+## 0.2.0+2
+
+* include barcode numbers before barcode itself 
