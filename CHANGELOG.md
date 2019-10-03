@@ -41,3 +41,7 @@
 ## 0.2.0+2
 
 * include barcode numbers before barcode itself 
+
+## 0.2.0+3
+
+* trim barcode 

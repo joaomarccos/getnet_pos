@@ -120,7 +120,8 @@ public class GetnetPosPlugin implements MethodCallHandler {
                     PosDigital.getInstance().getPrinter().addQrCode(AlignMode.CENTER, 240, line);
                 } else if (barcodeMather.find()) {
                     PosDigital.getInstance().getPrinter().addText(AlignMode.CENTER, line);
-                    PosDigital.getInstance().getPrinter().addBarCode(AlignMode.CENTER, line + "\n");
+                    PosDigital.getInstance().getPrinter().addBarCode(AlignMode.CENTER, line.trim());
+                    PosDigital.getInstance().getPrinter().addText(AlignMode.CENTER, "");
                 } else {
                     PosDigital.getInstance().getPrinter().addText(AlignMode.LEFT, line);
                 }
