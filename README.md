@@ -1,6 +1,6 @@
 # getnet_pos
 
-A plugin wrapper to use getnet pos hardware sdk on your flutter apps.
+A plugin wrapper to use getnet pos hardware sdk in your flutter apps.
 
 **ONLY WORKS ON ANDROID FOR NOW**
 
