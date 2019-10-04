@@ -37,7 +37,8 @@ In android/app folder **add the getnet sdk dependency** (must have .aar extensio
 ### Print method
 
 You can pass a list of string as argument. The first element of the list
-is the header.
+is the header. Print barcode and QrCode if find a text that match the given 
+patterns.
 
 ```
 import 'package:getnet_pos/getnet_pos.dart';
@@ -45,11 +46,16 @@ import 'package:getnet_pos/getnet_pos.dart';
 ...
 
 try {
-  GetnetPos.print([
-    "Header is the first line",
-    "Content line 1",
-    "Content line 2",
-  ]);
+  GetnetPos.print(
+    [
+     "Header is the first line",
+     "Content line 1",
+     "Content line 2",
+    ],
+    printBarcode = false, //default is true
+    barcodePattern = '^\\d{1,}.\$', //by default
+    qrCodePattern = '^\\d{1,}.\$', //by default
+  );
 } on PlatformException {
  ..
 }
