@@ -51,8 +51,13 @@
 * fix barcode regexp
 
 ## 0.2.1+1
-
+ 
+* Dependencies adjustment
 
 ## 0.2.2
 
 * printbarcode flag
+
+### 0.3.0
+
+* Get card serial number through MIFARE

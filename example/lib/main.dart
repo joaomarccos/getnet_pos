@@ -25,6 +25,7 @@ class _MyAppState extends State<MyApp> {
     String result;
     // Platform messages may fail, so we use a try/catch PlatformException.
     try {
+      // Example to print
       GetnetPos.print(
         [
           "Header is the first line",

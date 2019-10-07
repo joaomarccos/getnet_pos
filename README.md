@@ -34,7 +34,7 @@ In android/app folder **add the getnet sdk dependency** (must have .aar extensio
 ```
 
 
-### Print method
+### print method
 
 You can pass a list of string as argument. The first element of the list
 is the header. Print barcode and QrCode if find a text that match the given 
@@ -56,6 +56,25 @@ try {
     barcodePattern = '^\\d{1,}.\$', //by default
     qrCodePattern = '^\\d{1,}.\$', //by default
   );
+} on PlatformException {
+ ..
+}
+```
+
+### getMifareCardSN method
+
+You can get the card serial number via contactless just invoking this method.
+
+```
+import 'package:getnet_pos/getnet_pos.dart';
+
+...
+
+try {
+  GetnetPos.getMifareCardSN().then((cardSerialNumber) {
+    // Do anything with serial number here!
+    debugPrint(cardSerialNumber);
+  }).catchError((error) => debugPrint(error));
 } on PlatformException {
  ..
 }

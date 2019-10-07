@@ -18,4 +18,7 @@ class GetnetPos {
         'barcodePattern': barcodePattern,
         'printBarcode': printBarcode,
       });
+
+  /// Returns the card serial number from Mifare
+  static Future<String> getMifareCardSN() async => await _channel.invokeMethod('getMifare');
 }

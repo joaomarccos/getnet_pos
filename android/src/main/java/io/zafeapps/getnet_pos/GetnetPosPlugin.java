@@ -4,6 +4,8 @@ import android.os.IBinder;
 import android.os.RemoteException;
 
 import com.getnet.posdigital.PosDigital;
+import com.getnet.posdigital.mifare.IMifareCallback;
+import com.getnet.posdigital.mifare.MifareStatus;
 import com.getnet.posdigital.printer.AlignMode;
 import com.getnet.posdigital.printer.FontFormat;
 import com.getnet.posdigital.printer.IPrinterCallback;
@@ -130,8 +132,29 @@ public class GetnetPosPlugin implements MethodCallHandler {
         }
     }
 
-    private void getMifare(MethodCall call, Result result) {
+    private void getMifare(final MethodCall call, final Result result) {
         if (call.method.equals("getMifare")) {
+            try {
+                PosDigital.getInstance().getMifare().searchCard(new IMifareCallback.Stub() {
+                    @Override
+                    public void onCard(int i) throws RemoteException {
+                        int activate = PosDigital.getInstance().getMifare().activate(i);
+                        if (activate == MifareStatus.SUCCESS) {
+                            result.success(PosDigital.getInstance().getMifare().getCardSerialNo(i));
+                        } else {
+                            result.error("Error on Mifare. Code: " + i, null, null);
+                        }
+                        PosDigital.getInstance().getMifare().halt();
+                    }
+
+                    @Override
+                    public void onError(String s) throws RemoteException {
+
+                    }
+                });
+            } catch (RemoteException e) {
+                result.error("Failure on Mifare", e.getMessage(), e);
+            }
             result.success("Mifare");
         }
     }
