@@ -1,4 +1,4 @@
-# getnet_pos
+# [getnet_pos](https://pub.dev/packages/getnet_pos)
 
 A plugin wrapper to use getnet pos hardware sdk in your flutter apps.
 
