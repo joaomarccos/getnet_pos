@@ -61,3 +61,7 @@
 ### 0.3.0
 
 * Get card serial number through MIFARE
+
+### 0.3.1
+
+* Fix MIFARE

@@ -155,7 +155,6 @@ public class GetnetPosPlugin implements MethodCallHandler {
             } catch (RemoteException e) {
                 result.error("Failure on Mifare", e.getMessage(), e);
             }
-            result.success("Mifare");
         }
     }
 }
