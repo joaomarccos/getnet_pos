@@ -1,5 +1,7 @@
 package io.zafeapps.getnet_pos;
 
+import android.annotation.SuppressLint;
+import android.content.Context;
 import android.os.IBinder;
 import android.os.RemoteException;
 
@@ -11,6 +13,8 @@ import com.getnet.posdigital.printer.FontFormat;
 import com.getnet.posdigital.printer.IPrinterCallback;
 
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -25,34 +29,42 @@ import io.flutter.plugin.common.PluginRegistry.Registrar;
  */
 public class GetnetPosPlugin implements MethodCallHandler {
 
+    private static final Logger LOGGER = Logger.getLogger(GetnetPosPlugin.class.getName());
+    private static final String QR_CODE_PATTERN = "qrCodePattern";
+    private static final String BARCODE_PATTERN = "barcodePattern";
+    private static final String PRINT_BARCODE = "printBarcode";
+    private static final String LIST = "list";
+    @SuppressLint("StaticFieldLeak")
+    private static Context context;
+
     /**
      * Plugin registration.
      */
     public static void registerWith(Registrar registrar) {
-        initPosDigital(registrar);
+        context = registrar.context();
+        initPosDigital();
         final MethodChannel channel = new MethodChannel(registrar.messenger(), "getnet_pos");
         channel.setMethodCallHandler(new GetnetPosPlugin());
     }
 
     /**
      * Init the PosDigital Hardware SDK
-     *
-     * @param registrar - Registrar instance to get application context
      */
-    private static void initPosDigital(Registrar registrar) {
-        PosDigital.register(registrar.context(), new PosDigital.BindCallback() {
+    private static void initPosDigital() {
+        PosDigital.register(context, new PosDigital.BindCallback() {
             @Override
             public void onError(Exception e) {
+                LOGGER.log(Level.SEVERE, e.getMessage(), e);
             }
 
             @Override
             public void onConnected() {
-                boolean initiated = PosDigital.getInstance().isInitiated();
-                System.out.println("PosDigital is initiated? " + initiated);
+                System.out.println("PosDigital is initiated? " + PosDigital.getInstance().isInitiated());
             }
 
             @Override
             public void onDisconnected() {
+                LOGGER.info("PosDigital service getnet disconnected");
             }
         });
     }
@@ -65,10 +77,10 @@ public class GetnetPosPlugin implements MethodCallHandler {
 
     private void print(MethodCall call, final Result result) {
         if (call.method.equals("print")) {
-            List<String> lines = call.argument("list");
-            String qrCodePattern = call.argument("qrCodePattern");
-            String barCodePattern = call.argument("barcodePattern");
-            boolean printBarcode = call.argument("printBarcode");
+            List<String> lines = call.argument(LIST);
+            String qrCodePattern = call.argument(QR_CODE_PATTERN);
+            String barCodePattern = call.argument(BARCODE_PATTERN);
+            boolean printBarcode = call.argument(PRINT_BARCODE);
             if (lines != null && !lines.isEmpty()) {
                 try {
                     addTextToPrinter(lines, qrCodePattern, barCodePattern, printBarcode);
@@ -135,6 +147,7 @@ public class GetnetPosPlugin implements MethodCallHandler {
     private void getMifare(final MethodCall call, final Result result) {
         if (call.method.equals("getMifare")) {
             try {
+                initServiceIfNotInitiated();
                 PosDigital.getInstance().getMifare().searchCard(new IMifareCallback.Stub() {
                     @Override
                     public void onCard(int i) throws RemoteException {
@@ -142,7 +155,7 @@ public class GetnetPosPlugin implements MethodCallHandler {
                         if (activate == MifareStatus.SUCCESS) {
                             result.success(PosDigital.getInstance().getMifare().getCardSerialNo(i));
                         } else {
-                            result.error("Error: line 145", "Error on Mifare. Code: "+i, null);
+                            result.error("Error: line 145", "Error on Mifare. Code: " + i, null);
                         }
                         PosDigital.getInstance().getMifare().halt();
                     }
@@ -157,4 +170,11 @@ public class GetnetPosPlugin implements MethodCallHandler {
             }
         }
     }
+
+    private void initServiceIfNotInitiated() {
+        if (!PosDigital.getInstance().isInitiated()) {
+            initPosDigital();
+        }
+    }
+
 }

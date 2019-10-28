@@ -70,3 +70,7 @@
 ### 0.3.2
 
 * Logging errors
+
+### 0.3.3
+
+* Checking service initialization
