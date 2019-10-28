@@ -142,18 +142,18 @@ public class GetnetPosPlugin implements MethodCallHandler {
                         if (activate == MifareStatus.SUCCESS) {
                             result.success(PosDigital.getInstance().getMifare().getCardSerialNo(i));
                         } else {
-                            result.error("Error on Mifare. Code: " + i, null, null);
+                            result.error("Error: line 145", "Error on Mifare. Code: "+i, null);
                         }
                         PosDigital.getInstance().getMifare().halt();
                     }
 
                     @Override
                     public void onError(String s) throws RemoteException {
-
+                        result.error("Error: line 152", s, null);
                     }
                 });
             } catch (RemoteException e) {
-                result.error("Failure on Mifare", e.getMessage(), e);
+                result.error("Error: line 156", e.getMessage(), null);
             }
         }
     }

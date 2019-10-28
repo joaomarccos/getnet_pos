@@ -65,3 +65,8 @@
 ### 0.3.1
 
 * Fix MIFARE
+
+
+### 0.3.2
+
+* Logging errors
