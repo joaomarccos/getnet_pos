@@ -53,6 +53,7 @@ public class GetnetPosPlugin implements MethodCallHandler {
      * Init the PosDigital Hardware SDK
      */
     private static void initPosDigital(final Callable<Void> callback) {
+        if (PosDigital.getInstance().isInitiated()) PosDigital.unregister(context);
         PosDigital.register(context, new PosDigital.BindCallback() {
             @Override
             public void onError(Exception e) {
@@ -63,7 +64,6 @@ public class GetnetPosPlugin implements MethodCallHandler {
             public void onConnected() {
                 try {
                     callback.call();
-                    PosDigital.unregister(context);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
