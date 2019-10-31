@@ -74,3 +74,8 @@
 ### 0.3.3
 
 * Checking service initialization
+
+
+### 0.3.4
+
+* Scanner

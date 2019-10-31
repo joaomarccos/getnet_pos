@@ -69,13 +69,23 @@ You can get the card serial number via contactless just invoking this method.
 import 'package:getnet_pos/getnet_pos.dart';
 
 ...
+GetnetPos.getMifareCardSN().then((cardSerialNumber) {
+  // Do anything with serial number here!
+  debugPrint(cardSerialNumber);
+}).catchError((error) => debugPrint(error));
+```
 
-try {
-  GetnetPos.getMifareCardSN().then((cardSerialNumber) {
+
+### scan method
+
+You can scan qrcode/barcode using the device camera with this method.
+
+```
+import 'package:getnet_pos/getnet_pos.dart';
+
+...
+  GetnetPos.scan().then((scanResult) {
     // Do anything with serial number here!
-    debugPrint(cardSerialNumber);
+    debugPrint(scanResult);
   }).catchError((error) => debugPrint(error));
-} on PlatformException {
- ..
-}
 ```
