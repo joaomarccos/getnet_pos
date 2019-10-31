@@ -91,9 +91,9 @@ import 'package:getnet_pos/getnet_pos.dart';
 ...
 
 GetnetPos.scan().then((scanResult) {
-  // Do anything with serial number here!
+  // Do anything with scan result!
   debugPrint(scanResult);
-}).catchError((error) => debugPrint(error));
+}).catchError((error) => debugPrint(error)); // if cancelled or timeout is reached an error is raised.
 
 ...
 ```

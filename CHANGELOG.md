@@ -78,4 +78,8 @@
 
 ### 0.3.4
 
-* Scanner
+* Service halt
+
+### 0.4.0
+
+* scanner
