@@ -53,28 +53,31 @@ public class GetnetPosPlugin implements MethodCallHandler {
      * Init the PosDigital Hardware SDK
      */
     private static void initPosDigital(final Callable<Void> callback) {
-        if (PosDigital.getInstance().isInitiated()) PosDigital.unregister(context);
-        PosDigital.register(context, new PosDigital.BindCallback() {
-            @Override
-            public void onError(Exception e) {
-                LOGGER.log(Level.SEVERE, e.getMessage(), e);
-            }
-
-            @Override
-            public void onConnected() {
-                try {
-                    callback.call();
-                } catch (Exception e) {
-                    e.printStackTrace();
+        try {
+            if (PosDigital.getInstance().isInitiated()) PosDigital.unregister(context);
+        } finally {
+            PosDigital.register(context, new PosDigital.BindCallback() {
+                @Override
+                public void onError(Exception e) {
+                    LOGGER.log(Level.SEVERE, e.getMessage(), e);
                 }
-                System.out.println("PosDigital is initiated? " + PosDigital.getInstance().isInitiated());
-            }
 
-            @Override
-            public void onDisconnected() {
-                LOGGER.info("PosDigital service getnet disconnected");
-            }
-        });
+                @Override
+                public void onConnected() {
+                    try {
+                        callback.call();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    System.out.println("PosDigital is initiated? " + PosDigital.getInstance().isInitiated());
+                }
+
+                @Override
+                public void onDisconnected() {
+                    LOGGER.info("PosDigital service getnet disconnected");
+                }
+            });
+        }
     }
 
     @Override
