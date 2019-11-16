@@ -21,19 +21,6 @@ Change **minSdkVersion to 22** in your app
     }
 ``` 
 
-In android/app folder **add the getnet sdk dependency** (must have .aar extension)
-
-```
-.
-├── android
-│   ├── app
-│   │   ├── build.gradle
-│   │   ├── libs
-│   │   │   └── libposdigital-1.4.0-2-release.aar
-
-```
-
-
 ### print method
 
 You can pass a list of string as argument. The first element of the list

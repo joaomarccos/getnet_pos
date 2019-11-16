@@ -16,10 +16,6 @@ rootProject.allprojects {
     repositories {
         google()
         jcenter()
-
-        flatDir {
-            dirs 'libs'
-        }
     }
 }
 
@@ -38,6 +34,6 @@ android {
 }
 
 dependencies {
-    api(name:'libposdigital-1.4.0-2-release', ext:'aar')
+    implementation fileTree(dir: 'libs', include: ['*.aar'])
 }
 
