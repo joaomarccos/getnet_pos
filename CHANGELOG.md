@@ -83,3 +83,11 @@
 ### 0.4.0
 
 * scanner
+
+### 0.4.1
+
+* fix service initialization
+
+### 0.4.2
+
+* retries on read card failure occurs

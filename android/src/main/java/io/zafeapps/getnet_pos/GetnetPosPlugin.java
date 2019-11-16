@@ -83,7 +83,7 @@ public class GetnetPosPlugin implements MethodCallHandler {
     @Override
     public void onMethodCall(MethodCall call, Result result) {
         print(call, result);
-        getMifare(call, result);
+        getMifare(call, result, 10);
         scanner(call, result);
     }
 
@@ -162,7 +162,7 @@ public class GetnetPosPlugin implements MethodCallHandler {
         }
     }
 
-    private void getMifare(final MethodCall call, final Result result) {
+    private void getMifare(final MethodCall call, final Result result, final int remainTries) {
         if (call.method.equals("getMifare")) {
             initPosDigital(new Callable<Void>() {
                 @Override
@@ -171,18 +171,17 @@ public class GetnetPosPlugin implements MethodCallHandler {
                         PosDigital.getInstance().getMifare().searchCard(new IMifareCallback.Stub() {
                             @Override
                             public void onCard(int i) throws RemoteException {
-                                int activate = PosDigital.getInstance().getMifare().activate(i);
-                                if (activate == MifareStatus.SUCCESS) {
-                                    result.success(PosDigital.getInstance().getMifare().getCardSerialNo(i));
-                                } else {
-                                    result.error("Error on card activation", "Error on Mifare. Code: " + i, null);
-                                }
+                                result.success(PosDigital.getInstance().getMifare().getCardSerialNo(i));
                                 PosDigital.getInstance().getMifare().halt();
                             }
 
                             @Override
                             public void onError(String s) throws RemoteException {
-                                result.error("Error on Mifare", s, null);
+                                if (remainTries > 0) {
+                                    getMifare(call, result, remainTries - 1);
+                                } else {
+                                    result.error("Error on Mifare", s, null);
+                                }
                             }
                         });
                     } catch (RemoteException e) {
@@ -203,6 +202,7 @@ public class GetnetPosPlugin implements MethodCallHandler {
                         PosDigital.getInstance().getCamera().readBack(5000, new ICameraCallback.Stub() {
                             @Override
                             public void onSuccess(String s) throws RemoteException {
+                                LOGGER.info("Info obtained from scanner: " + s);
                                 result.success(s);
                             }
 
