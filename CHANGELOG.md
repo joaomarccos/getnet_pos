@@ -91,3 +91,7 @@
 ### 0.4.2
 
 * retries on read card failure occurs
+
+### 0.4.3
+
+* Refatoring to better collect errors

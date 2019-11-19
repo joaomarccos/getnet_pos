@@ -6,16 +6,12 @@ import android.os.RemoteException;
 
 import com.getnet.posdigital.PosDigital;
 import com.getnet.posdigital.camera.ICameraCallback;
-import com.getnet.posdigital.mifare.IMifareActivateCallback;
 import com.getnet.posdigital.mifare.IMifareCallback;
-import com.getnet.posdigital.mifare.MifareStatus;
 import com.getnet.posdigital.printer.AlignMode;
 import com.getnet.posdigital.printer.FontFormat;
 import com.getnet.posdigital.printer.IPrinterCallback;
 
 import java.util.List;
-import java.util.concurrent.Callable;
-import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
@@ -52,32 +48,40 @@ public class GetnetPosPlugin implements MethodCallHandler {
     /**
      * Init the PosDigital Hardware SDK
      */
-    private static void initPosDigital(final Callable<Void> callback) {
+    private static void doWhenInitialized(final Callback callback) {
         try {
-            if (PosDigital.getInstance().isInitiated()) PosDigital.unregister(context);
-        } finally {
-            PosDigital.register(context, new PosDigital.BindCallback() {
-                @Override
-                public void onError(Exception e) {
-                    LOGGER.log(Level.SEVERE, e.getMessage(), e);
-                }
-
-                @Override
-                public void onConnected() {
-                    try {
-                        callback.call();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                    System.out.println("PosDigital is initiated? " + PosDigital.getInstance().isInitiated());
-                }
-
-                @Override
-                public void onDisconnected() {
-                    LOGGER.info("PosDigital service getnet disconnected");
-                }
-            });
+            if (!PosDigital.getInstance().isInitiated()) {
+                registerPosDigital(callback);
+            } else {
+                callback.performAction();
+            }
+        } catch (RuntimeException e) {
+            registerPosDigital(callback);
         }
+    }
+
+    private static void registerPosDigital(final Callback callback) {
+        PosDigital.register(context, new PosDigital.BindCallback() {
+            @Override
+            public void onError(Exception e) {
+                LOGGER.log(Level.SEVERE, e.getMessage(), e);
+                callback.onError(e.getMessage());
+            }
+
+            @Override
+            public void onConnected() {
+                try {
+                    callback.performAction();
+                } catch (Exception e) {
+                    callback.onError(e.getMessage());
+                }
+            }
+
+            @Override
+            public void onDisconnected() {
+                LOGGER.info("PosDigital service getnet disconnected");
+            }
+        });
     }
 
     @Override
@@ -85,13 +89,39 @@ public class GetnetPosPlugin implements MethodCallHandler {
         print(call, result);
         getMifare(call, result, 10);
         scanner(call, result);
+        checkService(call, result);
     }
 
+    /**
+     * Check if the service is initialized
+     *
+     * @param call   - method call
+     * @param result - result callback
+     */
+    private void checkService(MethodCall call, Result result) {
+        if (call.method.equals("check")) {
+            boolean initiated = false;
+            try {
+                initiated = PosDigital.getInstance().isInitiated();
+                PosDigital.getInstance().getBeeper().success();
+            } catch (Exception e) {
+                LOGGER.log(Level.SEVERE, e.getMessage());
+            }
+            result.success(initiated);
+        }
+    }
+
+    /**
+     * Print
+     *
+     * @param call   - method call
+     * @param result - result callback
+     */
     private void print(final MethodCall call, final Result result) {
         if (call.method.equals("print")) {
-            initPosDigital(new Callable<Void>() {
+            doWhenInitialized(new Callback() {
                 @Override
-                public Void call() throws Exception {
+                public void performAction() {
                     List<String> lines = call.argument(LIST);
                     String qrCodePattern = call.argument(QR_CODE_PATTERN);
                     String barCodePattern = call.argument(BARCODE_PATTERN);
@@ -106,7 +136,11 @@ public class GetnetPosPlugin implements MethodCallHandler {
                     } else {
                         result.error("Arguments are missed [list, qrCodePattern, barcodePattern]", null, null);
                     }
-                    return null;
+                }
+
+                @Override
+                public void onError(String message) {
+                    result.error("print", message, null);
                 }
             });
         }
@@ -162,11 +196,18 @@ public class GetnetPosPlugin implements MethodCallHandler {
         }
     }
 
+    /**
+     * Try to read a next card
+     *
+     * @param call        - method call
+     * @param result      - result callback
+     * @param remainTries - number of tries
+     */
     private void getMifare(final MethodCall call, final Result result, final int remainTries) {
         if (call.method.equals("getMifare")) {
-            initPosDigital(new Callable<Void>() {
+            doWhenInitialized(new Callback() {
                 @Override
-                public Void call() throws Exception {
+                public void performAction() {
                     try {
                         PosDigital.getInstance().getMifare().searchCard(new IMifareCallback.Stub() {
                             @Override
@@ -187,17 +228,27 @@ public class GetnetPosPlugin implements MethodCallHandler {
                     } catch (RemoteException e) {
                         result.error("Error", e.getMessage(), null);
                     }
-                    return null;
+                }
+
+                @Override
+                public void onError(String message) {
+                    result.error("getMifare", message, null);
                 }
             });
         }
     }
 
+    /**
+     * Try read some barcode/qrcode using the back camera
+     *
+     * @param call   - method call
+     * @param result - result callback
+     */
     private void scanner(final MethodCall call, final Result result) {
         if (call.method.equals("scanner")) {
-            initPosDigital(new Callable<Void>() {
+            doWhenInitialized(new Callback() {
                 @Override
-                public Void call() throws Exception {
+                public void performAction() {
                     try {
                         PosDigital.getInstance().getCamera().readBack(5000, new ICameraCallback.Stub() {
                             @Override
@@ -224,10 +275,20 @@ public class GetnetPosPlugin implements MethodCallHandler {
                     } catch (RemoteException e) {
                         result.error("Error", e.getMessage(), null);
                     }
-                    return null;
+                }
+
+                @Override
+                public void onError(String message) {
+                    result.error("scanner", message, null);
                 }
             });
         }
+    }
+
+    private interface Callback {
+        void performAction();
+
+        void onError(String message);
     }
 
 }

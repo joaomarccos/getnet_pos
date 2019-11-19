@@ -24,4 +24,14 @@ class GetnetPos {
 
   /// Try scan for QRCode
   static Future<String> scan() async => await _channel.invokeMethod('scanner');
+
+  /// Check service status
+  static Future<String> checkService({
+    String label = 'Service Status',
+    String trueMessage = 'On',
+    String falseMessage = 'Off',
+  }) async {
+    var initiated = await _channel.invokeMethod('check');
+    return "$label: " + (initiated ? "$trueMessage" : "$falseMessage");
+  }
 }
