@@ -95,3 +95,11 @@
 ### 0.4.3
 
 * Refatoring to better collect errors
+
+### 0.4.4
+
+* Print returns future
+
+### 0.4.7
+
+* Examples
